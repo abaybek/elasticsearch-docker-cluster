@@ -1,0 +1,64 @@
+version: '3.7'
+services:
+  master1:
+    image: "elasticsearch:${VERSION}"
+    env_file:
+      - configs/jack/es-jack1.env
+      - configs/jvm.master.env
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esjack1:/usr/share/elasticsearch/data
+    ports:
+      - ${ELASTIC_EXTERNAL_PORT}:9200
+      - 9300:9300
+    networks:
+      - esnet
+  master2:
+    image: "elasticsearch:${VERSION}"
+    env_file:
+      - configs/jack/es-jack2.env
+      - configs/jvm.master.env
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esjack2:/usr/share/elasticsearch/data
+    networks:
+      - esnet
+  master3:
+    image: "elasticsearch:${VERSION}"
+    env_file:
+      - configs/jack/es-jack3.env
+      - configs/jvm.master.env
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esjack3:/usr/share/elasticsearch/data
+    networks:
+      - esnet
+  kibana:
+    image: 'kibana:${VERSION}'
+    environment:
+      SERVER_NAME: kibana.local
+      ELASTICSEARCH_HOSTS: http://master1:9200
+    ports:
+      - '${KIBANA_EXTERNAL_PORT}:5601'
+    depends_on:
+      - master1
+    networks:
+      - esnet
+
+
+volumes:
+  esjack1:
+  esjack2:
+  esjack3:
+
+networks:
+  esnet:
