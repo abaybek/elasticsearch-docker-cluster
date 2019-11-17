@@ -16,6 +16,7 @@ services:
       - 9300:9300
     networks:
       - esnet
+      - nlpmonitor_network
   master2:
     image: "elasticsearch:${VERSION}"
     env_file:
@@ -29,6 +30,7 @@ services:
       - esjack2:/usr/share/elasticsearch/data
     networks:
       - esnet
+      - nlpmonitor_network
   master3:
     image: "elasticsearch:${VERSION}"
     env_file:
@@ -53,6 +55,7 @@ services:
       - master1
     networks:
       - esnet
+      - nlpmonitor_network
 
 
 volumes:
@@ -62,3 +65,5 @@ volumes:
 
 networks:
   esnet:
+  nlpmonitor_network:
+    external: true
